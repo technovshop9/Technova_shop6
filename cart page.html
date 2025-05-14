@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="cart_style.css">
+  <title>Cart - Jaber Shop</title>
+</head>
+<body>
+
+  <main>
+    <h1>Your Shopping Cart</h1>
+    <div id="cartItems"></div>
+    <h3 id="totalPrice"></h3>
+
+    <h2>Customer Information</h2>
+    <form id="checkoutForm">
+      <input type="text" id="customerName" placeholder="Full Name" required>
+      <input type="text" id="customerAddress" placeholder="Shipping Address" required>
+      <input type="tel" id="customerPhone" placeholder="Phone Number" required pattern="[0-9+ ]{7,15}">
+      <button type="submit">Complete Order</button>
+    </form>
+  </main>
+
+  <script>
+    // Load cart when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCart();
+    });
+
+    // Render cart function
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsContainer = document.getElementById('cartItems');
+      const totalPriceElement = document.getElementById('totalPrice');
+      let total = 0;
+
+      cartItemsContainer.innerHTML = '';
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p>Your cart is empty. <a href="index.html">Start shopping</a></p>';
+        totalPriceElement.textContent = '';
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        const itemTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
+        total += itemTotal;
+        
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        cartItem.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div class="item-info">
+            <h3>${item.name}</h3>
+            <p>Price: $${item.price}</p>
+            <div class="quantity-control">
+              <button onclick="updateQuantity(${index}, -1)">-</button>
+              <span>${item.quantity || 1}</span>
+              <button onclick="updateQuantity(${index}, 1)">+</button>
+            </div>
+          </div>
+          <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+        `;
+        cartItemsContainer.appendChild(cartItem);
+      });
+
+      totalPriceElement.textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    // Update quantity function
+    function updateQuantity(index, change) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      if (cart[index]) {
+        cart[index].quantity = (cart[index].quantity || 1) + change;
+        
+        if (cart[index].quantity <= 0) {
+          cart.splice(index, 1);
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+      }
+    }
+
+    // Remove item function
+    function removeItem(index) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+
+// Fixed checkout function
+document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('customerName').value.trim();
+    const address = document.getElementById('customerAddress').value.trim();
+    const phone = document.getElementById('customerPhone').value.trim();
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Validation
+    if (!name || !address || !phone) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+
+    if (cart.length === 0) {
+        alert('Your cart is empty.');
+        return;
+    }
+
+    // Create order with ADMIN-PAGE-COMPATIBLE structure
+    const order = {
+        id: Date.now(),  // Unique ID
+        date: new Date().toLocaleString(),
+        customer: name,
+        address: address,
+        phone: phone,
+        email: "", // Add if you collect email
+        items: cart.map(item => ({
+            productId: item.id || Date.now(),
+            name: item.name,
+            quantity: item.quantity || 1,
+            price: parseFloat(item.price) || 0,
+            image: item.image || ""
+        })),
+        total: cart.reduce((sum, item) => sum + (parseFloat(item.price) * (item.quantity || 1)), 0),
+        status: "Pending",
+        shippingAddress: address
+    };
+
+    // Save to orders
+    const existingOrders = JSON.parse(localStorage.getItem('orders')) || [];
+    existingOrders.push(order);
+    localStorage.setItem('orders', JSON.stringify(existingOrders));
+
+    // Debug: Check if order saved
+    console.log("Order saved:", order);
+    console.log("All orders:", JSON.parse(localStorage.getItem('orders')));
+
+    // Clear cart and redirect
+    localStorage.removeItem('cart');
+    alert('Order placed successfully!');
+    window.location.href = "index.html";
+});
+
+  </script>
+</body>
+</html>

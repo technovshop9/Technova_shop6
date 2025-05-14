@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link link rel="stylesheet" href="login as admin.css" />
+  <title>Login As Admin</title>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Admin Login</h2>
+    <form onsubmit="handleLogin(event)">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+     <button type="submit">Login</button>
+     <a href="index.html" class="back-button">Back</a>
+    </form>
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault(); // Prevent form from submitting the normal way
+
+      // Optional: Check username/password (basic demo only)
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      // Basic static check (you can replace this with real logic or backend auth)
+      if (username === "admin" && password === "X+Ud$jpm%CpQ#mJ4") {
+        window.location.href = "admin page.html"; // Redirect to admin page
+      } else {
+        alert("Invalid username or password");
+      }
+    }
+
+    
+  </script>
+</body>
+</html>
+

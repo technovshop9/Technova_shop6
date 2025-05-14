@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technova - Lebanese Online Store</title>
+    <link rel="stylesheet" href="Technova_style.css">
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">Technova</a>
+        <div class="burger-menu" id="burgerMenu">&#9776;</div>
+        <nav class="navigation" id="navMenu">
+            <h2>Technova </h2>
+            <a href="#about-us">About Us</a>
+            <a href="#products">Products</a>
+            <a href="#contact">Contact</a>
+            <a href="cart page.html">Cart</a>
+            <a href="login as admin.html">Admin Login</a>
+        </nav>
+        <div class="overlay" id="overlay"></div>
+    </header>
+    
+    <main>
+        <h2 class="title">About Us</h2>
+        <section id="about-us">
+            <p>Welcome to our online shop — proudly based in Lebanon, where convenience meets quality. We are more than just an e-commerce store; we are a passionate team committed to bringing you a smooth and enjoyable shopping experience, all from the comfort of your home.</p>
+            
+            <p>Founded with the goal of simplifying shopping for everyone in Lebanon, our platform is designed to offer a wide range of high-quality products — from everyday essentials to the latest trends in fashion, electronics, home goods, personal care, and more. We carefully select each item to ensure it meets our standards for value, durability, and style.</p>
+            
+            <h3>What sets us apart is our commitment to our customers:</h3>
+            <ul style="list-style-type: none; padding-left: 1rem;">
+                <li>✓ Fast and reliable delivery across Lebanon</li>
+                <li>✓ Friendly and responsive customer support</li>
+                <li>✓ Ongoing deals and discounts to help you save</li>
+            </ul>
+            
+            <p>As a local business, we understand the unique needs of our community. We are proud to support Lebanese shoppers and contribute to a growing digital economy in the region. Whether you're shopping for yourself, your family, or a gift for someone special, we are here to make it easy, affordable, and enjoyable.</p>
+            
+            <p>Thank you for choosing us. We are excited to have you on this journey with us, and we look forward to serving you for years to come.</p>
+        </section>
+
+        <h2 class="title">Our Products</h2>
+        <section id="products">
+            <!-- Products will be loaded here by JavaScript -->
+        </section>
+    </main>
+
+    <h2 class="title">Contact Us</h2>
+    <section class="contact_" id="contact">
+        <div class="contact">
+            <img src="images/tiktok logo.png" alt="Tiktok" width="100">
+            <h2>Tiktok</h2>
+            <a href="http://www.tiktok.com/@technovaofficia">
+                <button type="button">Follow</button>
+            </a>
+        </div>
+        <div class="contact">
+            <img src="images/instagram logo.avif" alt="instagram" width="100">
+            <h2>Instagram</h2>
+            <a href="https://www.instagram.com/technovasite?igsh=YnFtdnFqMjdscmtx&utm_source=qr">
+                <button type="button">Follow</button>
+            </a>
+        </div>
+        <div class="contact">
+            <img src="images/whatsapp logo.jpg" alt="whatsapp" width="100">
+            <h2>Support:+961 81764266 </h2>
+            <h2>Support:+961 71234940</h2>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Technova. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const burgerMenu = document.getElementById('burgerMenu');
+        const navMenu = document.getElementById('navMenu');
+        const overlay = document.getElementById('overlay');
+        
+        burgerMenu.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            burgerMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking on overlay
+        overlay.addEventListener('click', function() {
+            navMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            burgerMenu.classList.remove('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.navigation a').forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                burgerMenu.classList.remove('active');
+            });
+        });
+        
+    </script>
+
+        <script>
+        // Fetch products from localStorage
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        const productsSection = document.getElementById('products');
+
+        // Loop through products and display them
+        products.forEach(product => {
+            const productArticle = document.createElement('div');
+            productArticle.classList.add('product');
+            
+            productArticle.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" style="max-width:100%; height:200px; object-fit:contain; display:block; margin:0 auto;"/>
+                <h2>${product.name}</h2>
+                <p>Price: $${product.price}</p>
+               <a href="product.html?id=${product.id}">View Product</a>
+            `;
+            
+            productsSection.appendChild(productArticle);
+        });
+    </script>
+
+
+<script>
+// First, style the products container to display items in a row
+const productsContainer = document.querySelector('.products');
+if (productsContainer) {
+    productsContainer.style.cssText = `
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        justify-content: center;
+    `;
+}
+
+// Then style each product card
+document.querySelectorAll('.product').forEach(product => {
+    // Product card styling for horizontal layout
+    product.style.cssText = `
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        width: 180px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    `;
+    
+    // Product image
+    const img = product.querySelector('img');
+    if (img) {
+        img.style.cssText = `
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        `;
+    }
+    
+    // Product title
+    const title = product.querySelector('h2, h3, h4');
+    if (title) {
+        title.style.cssText = `
+            font-size: 1rem;
+            margin: 8px 0 4px 0;
+            color: #222;
+            font-weight: bold;
+        `;
+    }
+    
+    // Price
+    const price = product.querySelector('p');
+    if (price) {
+        price.style.cssText = `
+            font-size: 1rem;
+            color: #e63946;
+            margin: 8px 0;
+            font-weight: 700;
+        `;
+    }
+    
+    // Button
+    const button = product.querySelector('button, a') || document.createElement('button');
+    button.style.cssText = `
+        background-color: #222;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 1rem;
+        margin-top: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    `;
+    button.textContent = 'View Product';
+        
+        button.addEventListener('mouseenter', () => {
+            button.style.backgroundColor = '#444';
+        });
+        button.addEventListener('mouseleave', () => {
+            button.style.backgroundColor = '#222';
+        });
+    }
+);
+</script>
+</body>
+</html>

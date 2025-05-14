@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Technova</title>
+    <link rel="stylesheet" href="products_style.css">
+</head>
+<body>
+    
+    
+    
+
+
+
+    <div class="container">
+        <div class="product-container" id="productContainer">
+            <!-- Product details will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        
+        // Load product data
+        const productData = JSON.parse(localStorage.getItem(`product_${productId}`));
+        const productContainer = document.getElementById('productContainer');
+        
+        if (productData) {
+            productContainer.innerHTML = `
+                <div class="product-gallery">
+                    <img src="${productData.image}" alt="${productData.name}" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h1 class="product-title">${productData.name}</h1>
+                    <div class="product-price">$${productData.price}</div>
+                    
+                    <div class="product-meta">
+                        <span>${productData.category}</span>
+                    </div>
+                    
+                    <p class="product-description">${productData.description}</p>
+                    
+                    <div class="quantity-selector">
+                        <button id="decreaseQty">-</button>
+                        <input type="number" id="quantity" value="1" min="1">
+                        <button id="increaseQty">+</button>
+                    </div>
+                    
+                    <button class="add-to-cart" id="addToCart">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        Add to Cart
+                    </button>
+                    
+                    <a href="index.html" class="back-button">← Back to Shop</a>
+                    <a href="cart page.html" class="back-button">← cart</a>
+                </div>
+            `;
+            
+            // Quantity selector functionality
+            const quantityInput = document.getElementById('quantity');
+            document.getElementById('decreaseQty').addEventListener('click', () => {
+                let value = parseInt(quantityInput.value);
+                if (value > 1) {
+                    quantityInput.value = value - 1;
+                }
+            });
+            
+            document.getElementById('increaseQty').addEventListener('click', () => {
+                let value = parseInt(quantityInput.value);
+                quantityInput.value = value + 1;
+            });
+            
+            // Add to cart functionality
+            document.getElementById('addToCart').addEventListener('click', () => {
+                const quantity = parseInt(quantityInput.value);
+                addToCart(productData, quantity);
+            });
+        } else {
+            productContainer.innerHTML = `
+                <div style="grid-column: 1/-1; padding: 40px; text-align: center;">
+                    <h1>Product Not Found</h1>
+                    <p>Sorry, this product doesn't exist or has been removed.</p>
+                    <a href="index.html" class="back-button">Back to Shop</a>
+                </div>
+            `;
+        }
+        
+        // Add to cart function
+        function addToCart(product, quantity = 1) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Check if product already in cart
+            const existingItem = cart.find(item => item.id === product.id);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: quantity
+                });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Show success message
+            alert(`${quantity} ${product.name} added to cart!`);
+            
+            // Optional: You could redirect to cart page
+            // window.location.href = "cart.html";
+        }
+    </script>
+</body>
+</html>     
